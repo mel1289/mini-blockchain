@@ -1,10 +1,7 @@
-package org.example;
+package org.example.core;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Block {
 
@@ -20,7 +17,7 @@ public class Block {
         this.timestamp = timestamp;
         this.transactions = transactions;
         this.previousHash = previousHash;
-        this.hash = this.computeHash();
+        this.nonce = 0;
     }
 
     public int getId() {
@@ -43,32 +40,24 @@ public class Block {
         return hash;
     }
 
-    private String computeHash() {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            String input = id + timestamp + transactions.toString() + previousHash + nonce;
-            byte[] hash = digest.digest(input.getBytes());
-            StringBuilder hexString = new StringBuilder();
-
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error creating hash", e);
-        }
+    public int getNonce() {
+        return nonce;
     }
 
-    public void mineBlock(int difficulty) {
-        nonce = 0;
-        String target = new String(new char[difficulty]).replace('\0', '0');
-        while (!hash.substring(0, difficulty).equals(target)) {
-            nonce++;
-            hash = computeHash();
-        }
+    public void setNonce(int nonce) {
+        this.nonce = nonce;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public void incrementNonce() {
+        this.nonce++;
+    }
+
+    public String toHashableString() {
+        return id + timestamp + transactions.toString() + previousHash + nonce;
     }
 
     @Override
