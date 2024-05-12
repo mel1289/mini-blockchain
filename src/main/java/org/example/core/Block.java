@@ -11,6 +11,7 @@ public class Block {
     private int nonce;
     private List<Transaction> transactions;
     private long timestamp;
+    private int nbrOfTransactions;
 
     public Block(int id, long timestamp, List<Transaction> transactions, String previousHash) {
         this.id = id;
@@ -18,6 +19,7 @@ public class Block {
         this.transactions = transactions;
         this.previousHash = previousHash;
         this.nonce = 0;
+        this.nbrOfTransactions = 0;
     }
 
     public int getId() {
@@ -50,6 +52,11 @@ public class Block {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+        this.nbrOfTransactions++;
     }
 
     public void incrementNonce() {
